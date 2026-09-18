@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Student Management - Student Task & Performance Tracker{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Student Management</h1>
+        <p class="page-subtitle">Register, view, update, and manage student academic profiles.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openAddStudentModal()">+ Add Student</button>
+</div>
+
+<!-- Search Bar -->
+<div class="filter-bar">
+    <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="studentSearchInput" placeholder="Search by name, roll number, or course..." oninput="filterStudentsTable()">
+    </div>
+    <div id="studentCountBadge" class="count-badge">0 Students</div>
+</div>
+
+<!-- Students Table Card -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="data-table" id="studentsTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Roll Number</th>
+                    <th>Name</th>
+                    <th>Course</th>
+                    <th>Semester</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+                <tr>
+                    <td colspan="7" class="text-center">Loading students...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal: Add Student -->
+<div id="addStudentModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Add New Student</h3>
+            <button class="modal-close" onclick="closeModal('addStudentModal')">&times;</button>
+        </div>
+        <form id="addStudentForm" onsubmit="handleAddStudent(event)">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="addName">Full Name <span class="required">*</span></label>
+                    <input type="text" id="addName" required placeholder="e.g. Rahul Sharma">
+                </div>
+                <div class="form-group">
+                    <label for="addRoll">Roll Number <span class="required">*</span></label>
+                    <input type="text" id="addRoll" required placeholder="e.g. 21BCE1001">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="addCourse">Course / Branch <span class="required">*</span></label>
+                        <input type="text" id="addCourse" required placeholder="e.g. B.Tech CSE">
+                    </div>
+                    <div class="form-group">
+                        <label for="addSemester">Semester (1–8) <span class="required">*</span></label>
+                        <input type="number" id="addSemester" min="1" max="8" required placeholder="e.g. 6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="addEmail">Email Address <span class="required">*</span></label>
+                    <input type="email" id="addEmail" required placeholder="e.g. rahul.sharma@example.com">
+                </div>
+                <div id="addStudentError" class="form-error"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('addStudentModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="addStudentSubmitBtn">Save Student</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Edit Student -->
+<div id="editStudentModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit Student</h3>
+            <button class="modal-close" onclick="closeModal('editStudentModal')">&times;</button>
+        </div>
+        <form id="editStudentForm" onsubmit="handleEditStudent(event)">
+            <input type="hidden" id="editStudentId">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editName">Full Name <span class="required">*</span></label>
+                    <input type="text" id="editName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editRoll">Roll Number <span class="required">*</span></label>
+                    <input type="text" id="editRoll" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editCourse">Course / Branch <span class="required">*</span></label>
+                        <input type="text" id="editCourse" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editSemester">Semester (1–8) <span class="required">*</span></label>
+                        <input type="number" id="editSemester" min="1" max="8" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editEmail">Email Address <span class="required">*</span></label>
+                    <input type="email" id="editEmail" required>
+                </div>
+                <div id="editStudentError" class="form-error"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editStudentModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="editStudentSubmitBtn">Update Student</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Delete Confirmation -->
+<div id="deleteStudentModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Confirm Deletion</h3>
+            <button class="modal-close" onclick="closeModal('deleteStudentModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete <strong id="deleteStudentName"></strong>?</p>
+            <p class="text-danger" style="margin-top: 0.5rem; font-size: 0.9rem;">
+                ⚠️ This will also delete all tasks assigned to this student. This action cannot be undone.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('deleteStudentModal')">Cancel</button>
+            <button type="button" class="btn btn-danger" id="confirmDeleteStudentBtn">Delete</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/students.js') }}"></script>
+{% endblock %}

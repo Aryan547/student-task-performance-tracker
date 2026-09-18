@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Student Task & Performance Tracker{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-badge">Academic Project &bull; VITyarthi</div>
+    <h1 class="hero-title">Student Task & Performance Tracker</h1>
+    <p class="hero-subtitle">
+        A centralized web platform for academic mentors and students to manage profiles, track academic assignments, and monitor real-time completion performance.
+    </p>
+    <div class="hero-actions">
+        <a href="/students" class="btn btn-primary">Manage Students</a>
+        <a href="/tasks" class="btn btn-secondary">Manage Tasks</a>
+        <a href="/dashboard" class="btn btn-accent">View Dashboard</a>
+    </div>
+</section>
+
+<section class="modules-grid">
+    <div class="module-card">
+        <div class="module-icon">👨‍🎓</div>
+        <h3>1. Student Management</h3>
+        <p>Register students, view their academic details, edit profiles, and maintain strict data validation across courses and semesters.</p>
+        <ul class="module-features">
+            <li>✓ Add and edit student profiles</li>
+            <li>✓ Unique roll number & email validation</li>
+            <li>✓ Semester range verification (1–8)</li>
+            <li>✓ Delete student with task cascading</li>
+        </ul>
+        <a href="/students" class="card-link">Go to Students &rarr;</a>
+    </div>
+
+    <div class="module-card">
+        <div class="module-icon">📋</div>
+        <h3>2. Task Management</h3>
+        <p>Assign tasks to enrolled students, track deadlines, filter tasks by status (Pending/Completed), and mark tasks complete.</p>
+        <ul class="module-features">
+            <li>✓ Create tasks linked to students</li>
+            <li>✓ Due-date and deadline tracking</li>
+            <li>✓ Instant task completion status toggle</li>
+            <li>✓ Filter by Pending or Completed</li>
+        </ul>
+        <a href="/tasks" class="card-link">Go to Tasks &rarr;</a>
+    </div>
+
+    <div class="module-card">
+        <div class="module-icon">📊</div>
+        <h3>3. Performance Dashboard</h3>
+        <p>Visualize total students, total tasks, pending tasks, completed tasks, completion percentage, and interactive Chart.js graphs.</p>
+        <ul class="module-features">
+            <li>✓ Real-time summary metric cards</li>
+            <li>✓ Dynamic completion percentage gauge</li>
+            <li>✓ Interactive Chart.js status chart</li>
+            <li>✓ Individual student progress breakdown</li>
+        </ul>
+        <a href="/dashboard" class="card-link">Go to Dashboard &rarr;</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Performance Dashboard - Student Task & Performance Tracker{% endblock %}
+
+{% block head %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Performance Dashboard</h1>
+        <p class="page-subtitle">Real-time academic metrics, task status distribution, and student progress analytics.</p>
+    </div>
+    <button class="btn btn-secondary" onclick="loadDashboard()">🔄 Refresh Data</button>
+</div>
+
+<!-- 4 Key Stat Cards -->
+<div class="stats-grid">
+    <div class="stat-card card-blue">
+        <div class="stat-header">
+            <span class="stat-icon">👨‍🎓</span>
+            <span class="stat-badge">Enrolled</span>
+        </div>
+        <div class="stat-value" id="statTotalStudents">0</div>
+        <div class="stat-label">Total Students</div>
+    </div>
+
+    <div class="stat-card card-purple">
+        <div class="stat-header">
+            <span class="stat-icon">📋</span>
+            <span class="stat-badge">Assignments</span>
+        </div>
+        <div class="stat-value" id="statTotalTasks">0</div>
+        <div class="stat-label">Total Tasks</div>
+    </div>
+
+    <div class="stat-card card-green">
+        <div class="stat-header">
+            <span class="stat-icon">✅</span>
+            <span class="stat-badge">Done</span>
+        </div>
+        <div class="stat-value" id="statCompletedTasks">0</div>
+        <div class="stat-label">Completed Tasks</div>
+    </div>
+
+    <div class="stat-card card-amber">
+        <div class="stat-header">
+            <span class="stat-icon">⏳</span>
+            <span class="stat-badge">In Progress</span>
+        </div>
+        <div class="stat-value" id="statPendingTasks">0</div>
+        <div class="stat-label">Pending Tasks</div>
+    </div>
+</div>
+
+<!-- Progress and Chart Section -->
+<div class="dashboard-grid">
+    <!-- Completion Rate Card -->
+    <div class="card">
+        <h3 class="card-title">Task Completion Percentage</h3>
+        <p class="card-subtitle">Overall completion progress of all academic assignments.</p>
+        
+        <div class="completion-gauge-container">
+            <div class="completion-percent-display">
+                <span id="completionPercentNumber">0</span><span class="percent-symbol">%</span>
+            </div>
+            <div class="progress-bar-container">
+                <div id="completionProgressBar" class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+            <div class="progress-meta">
+                <span id="progressSummaryText">0 of 0 tasks completed</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js Task Status Visualization -->
+    <div class="card">
+        <h3 class="card-title">Task Status Distribution</h3>
+        <p class="card-subtitle">Visual ratio of Completed vs Pending academic tasks.</p>
+        <div class="chart-container">
+            <canvas id="taskStatusChart"></canvas>
+            <div id="chartFallbackMessage" class="chart-fallback text-center hidden">
+                <p>No tasks recorded yet. Assign tasks to visualize distribution.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Student-wise Performance Breakdown -->
+<div class="card" style="margin-top: 1.5rem;">
+    <h3 class="card-title">Student Performance Breakdown</h3>
+    <p class="card-subtitle">Summary of task allocations and completion rates per enrolled student.</p>
+    <div class="table-responsive" style="margin-top: 1rem;">
+        <table class="data-table" id="studentPerformanceTable">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Roll Number</th>
+                    <th>Course</th>
+                    <th>Total Assigned</th>
+                    <th>Completed</th>
+                    <th>Pending</th>
+                    <th>Completion Rate</th>
+                </tr>
+            </thead>
+            <tbody id="studentPerformanceBody">
+                <tr>
+                    <td colspan="7" class="text-center">Loading performance metrics...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}Task Management - Student Task & Performance Tracker{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Task Management</h1>
+        <p class="page-subtitle">Assign tasks, track deadlines, filter by status, and update completion progress.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openAddTaskModal()">+ Add Task</button>
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+    <div class="filter-group">
+        <label for="statusFilter" class="filter-label">Filter Status:</label>
+        <select id="statusFilter" class="select-control" onchange="loadTasks()">
+            <option value="">All Tasks</option>
+            <option value="Pending">Pending Only</option>
+            <option value="Completed">Completed Only</option>
+        </select>
+    </div>
+
+    <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="taskSearchInput" placeholder="Search by title, student, or deadline..." oninput="filterTasksTable()">
+    </div>
+
+    <div id="taskCountBadge" class="count-badge">0 Tasks</div>
+</div>
+
+<!-- Tasks Table Card -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="data-table" id="tasksTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Task Title & Description</th>
+                    <th>Assigned Student</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tasksTableBody">
+                <tr>
+                    <td colspan="6" class="text-center">Loading tasks...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal: Add Task -->
+<div id="addTaskModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Add New Task</h3>
+            <button class="modal-close" onclick="closeModal('addTaskModal')">&times;</button>
+        </div>
+        <form id="addTaskForm" onsubmit="handleAddTask(event)">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="addStudentSelect">Assign to Student <span class="required">*</span></label>
+                    <select id="addStudentSelect" class="select-control" required>
+                        <option value="">-- Select Student --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="addTaskTitle">Task Title <span class="required">*</span></label>
+                    <input type="text" id="addTaskTitle" required placeholder="e.g. Lab Assignment 3 - Database Normalization">
+                </div>
+                <div class="form-group">
+                    <label for="addTaskDesc">Description</label>
+                    <textarea id="addTaskDesc" rows="3" placeholder="Detailed assignment instructions, submission guidelines..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="addTaskDeadline">Deadline <span class="required">*</span></label>
+                        <input type="date" id="addTaskDeadline" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addTaskStatus">Initial Status <span class="required">*</span></label>
+                        <select id="addTaskStatus" class="select-control" required>
+                            <option value="Pending" selected>Pending</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="addTaskError" class="form-error"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('addTaskModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="addTaskSubmitBtn">Save Task</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Edit Task -->
+<div id="editTaskModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit Task</h3>
+            <button class="modal-close" onclick="closeModal('editTaskModal')">&times;</button>
+        </div>
+        <form id="editTaskForm" onsubmit="handleEditTask(event)">
+            <input type="hidden" id="editTaskId">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Assigned Student</label>
+                    <input type="text" id="editTaskStudentName" disabled class="input-disabled">
+                </div>
+                <div class="form-group">
+                    <label for="editTaskTitle">Task Title <span class="required">*</span></label>
+                    <input type="text" id="editTaskTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="editTaskDesc">Description</label>
+                    <textarea id="editTaskDesc" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editTaskDeadline">Deadline <span class="required">*</span></label>
+                        <input type="date" id="editTaskDeadline" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTaskStatus">Status <span class="required">*</span></label>
+                        <select id="editTaskStatus" class="select-control" required>
+                            <option value="Pending">Pending</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="editTaskError" class="form-error"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editTaskModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="editTaskSubmitBtn">Update Task</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Delete Task Confirmation -->
+<div id="deleteTaskModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Confirm Deletion</h3>
+            <button class="modal-close" onclick="closeModal('deleteTaskModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete task <strong id="deleteTaskTitle"></strong>?</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('deleteTaskModal')">Cancel</button>
+            <button type="button" class="btn btn-danger" id="confirmDeleteTaskBtn">Delete</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/tasks.js') }}"></script>
+{% endblock %}
