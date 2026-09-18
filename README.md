@@ -62,8 +62,11 @@ This application provides a centralized, lightweight, and structured digital pla
 | **Database** | SQLite3 | File-based relational storage with foreign keys and ACID transactions |
 | **Frontend UI** | HTML5, CSS3, Vanilla JavaScript | Responsive layout, modal controls, asynchronous `fetch` requests |
 | **Visualization** | Chart.js 4.4 | Client-side doughnut charts for performance analytics |
+| **Computer Vision** | OpenCV (cv2) | Basic uploaded-image quality analysis such as brightness and blur detection |
 | **Testing Suite** | Pytest 9.1 | Automated unit and integration tests for APIs and views |
 | **Version Control** | Git | Local version tracking and Git repository management |
+
+> **Computer Vision**: OpenCV is used for basic uploaded-image quality analysis such as brightness and blur detection.
 
 ---
 
@@ -73,9 +76,11 @@ This application provides a centralized, lightweight, and structured digital pla
 student-task-performance-tracker/
 ├── app.py                     # Flask application factory, blueprints & error handlers
 ├── config.py                  # Environment configuration (development & testing)
+├── cv_utils.py                # Computer Vision image analysis utilities (OpenCV)
 ├── database.py                # SQLite connection manager & parameterized queries
 ├── schema.sql                 # Database DDL schema, constraints, and indexes
-├── requirements.txt           # Project dependencies (Flask, Pytest)
+├── seed.py                    # Utility script to populate sample demo data
+├── requirements.txt           # Project dependencies (Flask, Pytest, OpenCV)
 ├── .gitignore                 # Excluded files (venv, *.db, cache)
 ├── statement.md               # VITyarthi project statement & scope document
 ├── README.md                  # Main project documentation & setup guide
@@ -100,6 +105,7 @@ student-task-performance-tracker/
 ├── tests/
 │   ├── __init__.py            # Test package initializer
 │   ├── conftest.py            # Isolated test database fixture and test client
+│   ├── test_cv.py             # Pytest tests for OpenCV image quality analysis
 │   ├── test_students.py       # Pytest tests for student CRUD and validation
 │   ├── test_tasks.py          # Pytest tests for task CRUD, status and filters
 │   └── test_dashboard.py      # Pytest tests for dashboard calculation accuracy
@@ -195,24 +201,33 @@ pytest -v
 ============================= test session starts =============================
 platform win32 -- Python 3.13.12, pytest-9.1.1, pluggy-1.6.0
 rootdir: C:\College\Semester 6\Vityarthi\student-task-performance-tracker
-collected 14 items
+collected 23 items
 
-tests/test_dashboard.py::test_dashboard_stats_empty_db PASSED            [  7%]
-tests/test_dashboard.py::test_dashboard_stats_calculation PASSED         [ 14%]
-tests/test_dashboard.py::test_view_routes_render_success PASSED          [ 21%]
-tests/test_students.py::test_student_creation PASSED                     [ 28%]
-tests/test_students.py::test_student_retrieval PASSED                    [ 35%]
-tests/test_students.py::test_student_update PASSED                       [ 42%]
-tests/test_students.py::test_student_deletion PASSED                     [ 50%]
-tests/test_students.py::test_student_invalid_inputs PASSED               [ 57%]
-tests/test_students.py::test_student_duplicate_constraints PASSED        [ 64%]
-tests/test_tasks.py::test_task_creation PASSED                           [ 71%]
-tests/test_tasks.py::test_task_completion PASSED                         [ 78%]
-tests/test_tasks.py::test_task_deletion PASSED                           [ 85%]
-tests/test_tasks.py::test_task_filtering_by_status PASSED                [ 92%]
+tests/test_cv.py::test_is_allowed_image PASSED                           [  4%]
+tests/test_cv.py::test_cv_utils_dark_image PASSED                        [  8%]
+tests/test_cv.py::test_cv_utils_bright_image PASSED                      [ 13%]
+tests/test_cv.py::test_cv_utils_clear_and_blurry_images PASSED           [ 17%]
+tests/test_cv.py::test_cv_utils_invalid_input PASSED                     [ 21%]
+tests/test_api.py (CV)::test_api_check_image_success PASSED              [ 26%]
+tests/test_cv.py::test_api_check_image_missing_file PASSED               [ 30%]
+tests/test_cv.py::test_api_check_image_unsupported_format PASSED         [ 34%]
+tests/test_cv.py::test_api_check_image_corrupted_file PASSED             [ 39%]
+tests/test_dashboard.py::test_dashboard_stats_empty_db PASSED            [ 43%]
+tests/test_dashboard.py::test_dashboard_stats_calculation PASSED         [ 47%]
+tests/test_dashboard.py::test_view_routes_render_success PASSED          [ 52%]
+tests/test_students.py::test_student_creation PASSED                     [ 56%]
+tests/test_students.py::test_student_retrieval PASSED                    [ 60%]
+tests/test_students.py::test_student_update PASSED                       [ 65%]
+tests/test_students.py::test_student_deletion PASSED                     [ 69%]
+tests/test_students.py::test_student_invalid_inputs PASSED               [ 73%]
+tests/test_students.py::test_student_duplicate_constraints PASSED        [ 78%]
+tests/test_tasks.py::test_task_creation PASSED                           [ 82%]
+tests/test_tasks.py::test_task_completion PASSED                         [ 86%]
+tests/test_tasks.py::test_task_deletion PASSED                           [ 91%]
+tests/test_tasks.py::test_task_filtering_by_status PASSED                [ 95%]
 tests/test_tasks.py::test_task_invalid_inputs PASSED                     [100%]
 
-============================= 14 passed in 0.60s ==============================
+============================= 23 passed in 0.59s ==============================
 ```
 
 ---

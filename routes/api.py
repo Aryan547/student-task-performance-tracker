@@ -18,6 +18,7 @@ from database import (
     delete_task,
     get_dashboard_stats
 )
+from cv_utils import is_allowed_image, analyze_image_quality
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
@@ -341,3 +342,37 @@ def dashboard_stats():
         }), 200
     except Exception as e:
         return jsonify({"success": False, "error": f"Failed to compute statistics: {str(e)}"}), 500
+
+# =======================================================
+# Computer Vision: Image Quality Analysis Endpoint
+# =======================================================
+
+@api_bp.route("/cv/check-image", methods=["POST"])
+def check_image():
+    """Analyze uploaded image for grayscale brightness and blur using OpenCV."""
+    if not request.files:
+        return jsonify({"success": False, "error": "No image file provided in request."}), 400
+
+    file = request.files.get("image") or request.files.get("file") or next(iter(request.files.values()), None)
+
+    if not file or not file.filename:
+        return jsonify({"success": False, "error": "No file selected."}), 400
+
+    if not is_allowed_image(file.filename):
+        return jsonify({
+            "success": False,
+            "error": "Unsupported file format. Allowed formats: jpg, jpeg, png, bmp, webp."
+        }), 400
+
+    try:
+        results = analyze_image_quality(file)
+        return jsonify({
+            "success": True,
+            "filename": file.filename,
+            **results
+        }), 200
+    except ValueError as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"success": False, "error": f"Failed to process image: {str(e)}"}), 500
+
