@@ -219,14 +219,18 @@ tests/test_tasks.py::test_task_invalid_inputs PASSED                     [100%]
 
 ## 10. Screenshots Section
 
-*(Place application screenshots here after running the project locally)*
+### 1. Home Portal
+![Home Portal](docs/screenshots/home_portal.png)
 
-| View / Page | Description | Recommended Screenshot Name |
-| :--- | :--- | :--- |
-| **Home Portal** | Welcome landing page with quick-navigation cards | `docs/screenshots/home_portal.png` |
-| **Student Directory** | Student table with enrolled profiles & Add/Edit modals | `docs/screenshots/students_management.png` |
-| **Task Management** | Task list with status badges and filter controls | `docs/screenshots/tasks_management.png` |
-| **Performance Dashboard** | Stat cards, completion percentage bar & Chart.js graph | `docs/screenshots/performance_dashboard.png` |
+### 2. Student Management
+![Student Management](docs/screenshots/students_management.png)
+
+### 3. Task Management
+![Task Management](docs/screenshots/tasks_management.png)
+
+### 4. Performance Dashboard
+![Performance Dashboard](docs/screenshots/performance_dashboard.png)
+
 
 ---
 
